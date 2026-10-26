@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "eNCPT Charting Module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:3000" }],
+  "item": [
+    {
+      "name": "List notes",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/notes" }
+    },
+    {
+      "name": "Create valid note (expect 201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/notes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patientName\": \"Test Patient\",\n  \"assessment\": { \"FH\": \"Skips breakfast; high sugary drink intake\", \"AD\": \"BMI 29\" },\n  \"diagnosis\": { \"code\": \"NB-1.7\", \"etiology\": \"limited access to fresh food\", \"signs\": \"daily soda intake and no vegetables logged\" },\n  \"intervention\": { \"codes\": [\"E-1\", \"C-2\"], \"details\": \"Plate method education; goal-setting\" },\n  \"monitoring\": { \"code\": \"FH-1.2\", \"goal\": \"3 vegetable servings/day in 4 weeks\" }\n}"
+        }
+      }
+    },
+    {
+      "name": "Create invalid note - bad diagnosis code (expect 400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/notes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patientName\": \"Test Patient\",\n  \"assessment\": { \"FH\": \"x\" },\n  \"diagnosis\": { \"code\": \"XX-9.9\", \"etiology\": \"a\", \"signs\": \"b\" },\n  \"intervention\": { \"codes\": [\"E-1\"] },\n  \"monitoring\": { \"code\": \"FH-1.1\" }\n}"
+        }
+      }
+    },
+    {
+      "name": "Create invalid note - missing PES parts (expect 400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/notes",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patientName\": \"Test Patient\",\n  \"assessment\": { \"FH\": \"x\" },\n  \"diagnosis\": { \"code\": \"NI-1.3\" },\n  \"intervention\": { \"codes\": [] },\n  \"monitoring\": { \"code\": \"FH-1.1\" }\n}"
+        }
+      }
+    }
+  ]
+}
